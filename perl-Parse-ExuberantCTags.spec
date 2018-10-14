@@ -4,15 +4,15 @@
 #
 Name     : perl-Parse-ExuberantCTags
 Version  : 1.02
-Release  : 1
+Release  : 2
 URL      : https://cpan.metacpan.org/authors/id/S/SM/SMUELLER/Parse-ExuberantCTags-1.02.tar.gz
 Source0  : https://cpan.metacpan.org/authors/id/S/SM/SMUELLER/Parse-ExuberantCTags-1.02.tar.gz
 Source1  : http://http.debian.net/debian/pool/main/libp/libparse-exuberantctags-perl/libparse-exuberantctags-perl_1.02-1.debian.tar.xz
 Summary  : Efficiently parse exuberant ctags files
 Group    : Development/Tools
 License  : Artistic-1.0-Perl
-Requires: perl-Parse-ExuberantCTags-lib
-Requires: perl-Parse-ExuberantCTags-man
+Requires: perl-Parse-ExuberantCTags-lib = %{version}-%{release}
+BuildRequires : buildreq-cpan
 
 %description
 NAME
@@ -35,6 +35,16 @@ while (defined($tag = $parser->nextTag)) {
 # use the tag structure
 }
 
+%package dev
+Summary: dev components for the perl-Parse-ExuberantCTags package.
+Group: Development
+Requires: perl-Parse-ExuberantCTags-lib = %{version}-%{release}
+Provides: perl-Parse-ExuberantCTags-devel = %{version}-%{release}
+
+%description dev
+dev components for the perl-Parse-ExuberantCTags package.
+
+
 %package lib
 Summary: lib components for the perl-Parse-ExuberantCTags package.
 Group: Libraries
@@ -43,19 +53,11 @@ Group: Libraries
 lib components for the perl-Parse-ExuberantCTags package.
 
 
-%package man
-Summary: man components for the perl-Parse-ExuberantCTags package.
-Group: Default
-
-%description man
-man components for the perl-Parse-ExuberantCTags package.
-
-
 %prep
-tar -xf %{SOURCE1}
-cd ..
 %setup -q -n Parse-ExuberantCTags-1.02
-mkdir -p %{_topdir}/BUILD/Parse-ExuberantCTags-1.02/deblicense/
+cd ..
+%setup -q -T -D -n Parse-ExuberantCTags-1.02 -b 1
+mkdir -p deblicense/
 mv %{_topdir}/BUILD/debian/* %{_topdir}/BUILD/Parse-ExuberantCTags-1.02/deblicense/
 
 %build
@@ -81,9 +83,9 @@ make TEST_VERBOSE=1 test
 %install
 rm -rf %{buildroot}
 if test -f Makefile.PL; then
-make pure_install PERL_INSTALL_ROOT=%{buildroot}
+make pure_install PERL_INSTALL_ROOT=%{buildroot} INSTALLDIRS=vendor
 else
-./Build install --installdirs=site --destdir=%{buildroot}
+./Build install --installdirs=vendor --destdir=%{buildroot}
 fi
 find %{buildroot} -type f -name .packlist -exec rm -f {} ';'
 find %{buildroot} -depth -type d -exec rmdir {} 2>/dev/null ';'
@@ -92,12 +94,12 @@ find %{buildroot} -type f -name '*.bs' -empty -exec rm -f {} ';'
 
 %files
 %defattr(-,root,root,-)
-/usr/lib/perl5/site_perl/5.26.1/x86_64-linux-thread-multi/Parse/ExuberantCTags.pm
+/usr/lib/perl5/vendor_perl/5.26.1/x86_64-linux-thread-multi/Parse/ExuberantCTags.pm
+
+%files dev
+%defattr(-,root,root,-)
+/usr/share/man/man3/Parse::ExuberantCTags.3
 
 %files lib
 %defattr(-,root,root,-)
-/usr/lib/perl5/site_perl/5.26.1/x86_64-linux-thread-multi/auto/Parse/ExuberantCTags/ExuberantCTags.so
-
-%files man
-%defattr(-,root,root,-)
-/usr/share/man/man3/Parse::ExuberantCTags.3
+/usr/lib/perl5/vendor_perl/5.26.1/x86_64-linux-thread-multi/auto/Parse/ExuberantCTags/ExuberantCTags.so
