@@ -4,14 +4,14 @@
 #
 Name     : perl-Parse-ExuberantCTags
 Version  : 1.02
-Release  : 11
+Release  : 12
 URL      : https://cpan.metacpan.org/authors/id/S/SM/SMUELLER/Parse-ExuberantCTags-1.02.tar.gz
 Source0  : https://cpan.metacpan.org/authors/id/S/SM/SMUELLER/Parse-ExuberantCTags-1.02.tar.gz
 Source1  : http://http.debian.net/debian/pool/main/libp/libparse-exuberantctags-perl/libparse-exuberantctags-perl_1.02-1.debian.tar.xz
 Summary  : Efficiently parse exuberant ctags files
 Group    : Development/Tools
 License  : Artistic-1.0-Perl
-Requires: perl-Parse-ExuberantCTags-lib = %{version}-%{release}
+Requires: perl-Parse-ExuberantCTags-perl = %{version}-%{release}
 BuildRequires : buildreq-cpan
 
 %description
@@ -38,33 +38,35 @@ while (defined($tag = $parser->nextTag)) {
 %package dev
 Summary: dev components for the perl-Parse-ExuberantCTags package.
 Group: Development
-Requires: perl-Parse-ExuberantCTags-lib = %{version}-%{release}
 Provides: perl-Parse-ExuberantCTags-devel = %{version}-%{release}
+Requires: perl-Parse-ExuberantCTags = %{version}-%{release}
 
 %description dev
 dev components for the perl-Parse-ExuberantCTags package.
 
 
-%package lib
-Summary: lib components for the perl-Parse-ExuberantCTags package.
-Group: Libraries
+%package perl
+Summary: perl components for the perl-Parse-ExuberantCTags package.
+Group: Default
+Requires: perl-Parse-ExuberantCTags = %{version}-%{release}
 
-%description lib
-lib components for the perl-Parse-ExuberantCTags package.
+%description perl
+perl components for the perl-Parse-ExuberantCTags package.
 
 
 %prep
 %setup -q -n Parse-ExuberantCTags-1.02
-cd ..
-%setup -q -T -D -n Parse-ExuberantCTags-1.02 -b 1
+cd %{_builddir}
+tar xf %{_sourcedir}/libparse-exuberantctags-perl_1.02-1.debian.tar.xz
+cd %{_builddir}/Parse-ExuberantCTags-1.02
 mkdir -p deblicense/
-mv %{_topdir}/BUILD/debian/* %{_topdir}/BUILD/Parse-ExuberantCTags-1.02/deblicense/
+cp -r %{_builddir}/debian/* %{_builddir}/Parse-ExuberantCTags-1.02/deblicense/
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
+export LANG=C.UTF-8
 if test -f Makefile.PL; then
 %{__perl} Makefile.PL
 make  %{?_smp_mflags}
@@ -74,7 +76,7 @@ else
 fi
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
@@ -94,12 +96,12 @@ find %{buildroot} -type f -name '*.bs' -empty -exec rm -f {} ';'
 
 %files
 %defattr(-,root,root,-)
-/usr/lib/perl5/vendor_perl/5.28.2/x86_64-linux-thread-multi/Parse/ExuberantCTags.pm
 
 %files dev
 %defattr(-,root,root,-)
 /usr/share/man/man3/Parse::ExuberantCTags.3
 
-%files lib
+%files perl
 %defattr(-,root,root,-)
-/usr/lib/perl5/vendor_perl/5.28.2/x86_64-linux-thread-multi/auto/Parse/ExuberantCTags/ExuberantCTags.so
+/usr/lib/perl5/vendor_perl/5.30.1/x86_64-linux-thread-multi/Parse/ExuberantCTags.pm
+/usr/lib/perl5/vendor_perl/5.30.1/x86_64-linux-thread-multi/auto/Parse/ExuberantCTags/ExuberantCTags.so
