@@ -4,7 +4,7 @@
 #
 Name     : perl-Parse-ExuberantCTags
 Version  : 1.02
-Release  : 24
+Release  : 25
 URL      : https://cpan.metacpan.org/authors/id/S/SM/SMUELLER/Parse-ExuberantCTags-1.02.tar.gz
 Source0  : https://cpan.metacpan.org/authors/id/S/SM/SMUELLER/Parse-ExuberantCTags-1.02.tar.gz
 Source1  : http://http.debian.net/debian/pool/main/libp/libparse-exuberantctags-perl/libparse-exuberantctags-perl_1.02-1.debian.tar.xz
